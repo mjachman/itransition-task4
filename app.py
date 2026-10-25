@@ -3,6 +3,7 @@ from pathlib import Path
 import pandas as pd
 import streamlit as st
 
+from assistant import render_chat_section
 from pipeline import load_all_stores
 
 DATA_DIR = Path(__file__).parent / "data"
@@ -66,6 +67,7 @@ def main():
     st.set_page_config(page_title="Bookstore Analytics", layout="wide")
     st.title("Bookstore Analytics Dashboard")
     render_store_tabs(get_stores_data())
+    render_chat_section()
 
 
 if __name__ == "__main__":
