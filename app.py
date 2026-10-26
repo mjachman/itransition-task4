@@ -2,8 +2,7 @@ from pathlib import Path
 
 import pandas as pd
 import streamlit as st
-
-from assistant import render_chat_section
+from assistant import get_active_stores, render_chat_section
 from pipeline import load_all_stores
 
 DATA_DIR = Path(__file__).parent / "data"
@@ -56,17 +55,37 @@ def render_charts(m: dict):
     render_top_days_table(col_table, m)
 
 
+def get_store_subset(df: pd.DataFrame, store_name: str) -> pd.DataFrame:
+    return df[df["store"] == store_name] if "store" in df.columns else df
+
+
+def render_filtered_table(store_name: str):
+    if flt := st.session_state.get("active_filter"):
+        sub = get_store_subset(flt["df"], store_name)
+        with st.expander(f"Matching {flt['table']} ({len(sub)} rows)"):
+            st.dataframe(sub, hide_index=True, width="stretch")
+
+
+def render_filter_banner():
+    flt = st.session_state.get("active_filter")
+    if flt and st.button(f"Clear Filter: {flt['desc']}", type="primary"):
+        st.session_state.pop("active_filter", None)
+        st.rerun()
+
+
 def render_store_tabs(stores: dict[str, dict]):
     for name, tab in zip(stores.keys(), st.tabs(list(stores.keys()))):
         with tab:
             render_metrics(stores[name])
             render_charts(stores[name])
+            render_filtered_table(name)
 
 
 def main():
     st.set_page_config(page_title="Bookstore Analytics", layout="wide")
     st.title("Bookstore Analytics Dashboard")
-    render_store_tabs(get_stores_data())
+    render_filter_banner()
+    render_store_tabs(get_active_stores(get_stores_data()))
     render_chat_section()
 
 
