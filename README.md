@@ -1,11 +1,23 @@
-# task4
+# iTransition Task 4 (Data Engineering Group)
 
-streamlit dashboard: https://itransition-task4.streamlit.app/
+Streamlit dashboard: https://itransition-task4.streamlit.app/
 
-### run
+## Run locally
+
 ```bash
 pip install -r requirements.txt
 streamlit run app.py
 ```
 
-`GEMINI_API_KEY` can be set in `.streamlit/secrets.toml` or as env var.
+Set `GEMINI_API_KEY` in `.streamlit/secrets.toml`:
+
+```toml
+GEMINI_API_KEY="your_key_here"
+```
+
+or as an environment variable:
+
+```bash
+export GEMINI_API_KEY="your_key_here"   # macOS/Linux
+# setx GEMINI_API_KEY "your_key_here"   # Windows
+```
